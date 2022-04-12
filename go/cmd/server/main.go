@@ -1,12 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/gorilla/mux"
+	db "github.com/tabinnorway/sumisid/go/internal/database"
 )
 
 func CreateRoutes() *mux.Router {
@@ -28,6 +30,15 @@ func CreateRoutes() *mux.Router {
 }
 
 func Run() error {
+	db, err := db.NewDatabase()
+	if err != nil {
+		fmt.Println("Failed to connect to database: ", err)
+		return err
+	}
+	if err := db.Ping(context.Background()); err != nil {
+		return err
+	}
+
 	port := ":8080"
 	fmt.Print("Starting application...")
 	fmt.Println("listening on port ", port)

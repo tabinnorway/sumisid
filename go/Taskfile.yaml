@@ -14,3 +14,6 @@ tasks:
     cmds:
       - golangci-lint run
 
+  run:
+    cmds:
+      - docker-compose up --build
