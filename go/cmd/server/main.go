@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -35,7 +34,8 @@ func Run() error {
 		fmt.Println("Failed to connect to database: ", err)
 		return err
 	}
-	if err := db.Ping(context.Background()); err != nil {
+	if err := db.MigrateDB(); err != nil {
+		fmt.Println("Failed to migrate database")
 		return err
 	}
 
