@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"time"
 
 	"github.com/gorilla/mux"
 	db "github.com/tabinnorway/sumisid/go/internal/database"
+	"github.com/tabinnorway/sumisid/go/internal/diveclub"
+	transportHttp "github.com/tabinnorway/sumisid/go/internal/transport/http"
 )
 
 func CreateRoutes() *mux.Router {
@@ -39,14 +40,21 @@ func Run() error {
 		return err
 	}
 
+	dcService := diveclub.NewDiveClubService(db)
+
 	port := ":8080"
-	fmt.Print("Starting application...")
+	fmt.Print("Application is starting...")
 	fmt.Println("listening on port ", port)
 	now := time.Now()
 	log.Println("Server started at: ", now.Local().Format(time.UnixDate))
 
-	router := CreateRoutes()
-	http.ListenAndServe(port, router)
+	httpHandler := transportHttp.NewHandler(dcService)
+	if err := httpHandler.Serve(); err != nil {
+		return err
+	}
+
+	// router := CreateRoutes()
+	// http.ListenAndServe(port, router)
 	return nil
 }
 

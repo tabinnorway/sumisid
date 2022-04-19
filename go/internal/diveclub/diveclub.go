@@ -3,7 +3,6 @@ package diveclub
 import (
 	"context"
 	"errors"
-	"log"
 )
 
 var (
@@ -27,9 +26,9 @@ type DiveClub struct {
 // to manipulate the storage of dive clubs
 type DiveClubStore interface {
 	GetDiveClub(context.Context, int) (DiveClub, error)
-	UpdateDiveClub(ctx context.Context, dc DiveClub) (bool, error)
-	DeleteDiveClub(ctx context.Context, id int) (bool, error)
-	CreateDiveClub(ctx context.Context, id int) (DiveClub, error)
+	UpdateDiveClub(ctx context.Context, id int, dc DiveClub) (DiveClub, error)
+	DeleteDiveClub(ctx context.Context, id int) error
+	CreateDiveClub(ctx context.Context, dc DiveClub) (DiveClub, error)
 }
 
 type DiveClubService struct {
@@ -43,23 +42,25 @@ func NewDiveClubService(diveClubStore DiveClubStore) *DiveClubService {
 }
 
 func (service *DiveClubService) GetDiveClub(ctx context.Context, id int) (DiveClub, error) {
-	log.Println("Getting dive club")
-	dc, err := service.GetDiveClub(ctx, id)
+	dc, err := service.DiveClubStore.GetDiveClub(ctx, id)
 	if err != nil {
-		log.Println(err)
-		return DiveClub{}, ErrorNotFound
+		return DiveClub{}, err
 	}
 	return dc, nil
 }
 
-func (service *DiveClubService) UpdateDiveClub(ctx context.Context, dc DiveClub) (bool, error) {
-	return false, ErrorNotImplemented
+func (service *DiveClubService) UpdateDiveClub(ctx context.Context, dc DiveClub) (DiveClub, error) {
+	return service.DiveClubStore.UpdateDiveClub(ctx, dc.Id, dc)
 }
 
-func (service *DiveClubService) DeleteDiveClub(ctx context.Context, id int) (bool, error) {
-	return false, ErrorNotImplemented
+func (service *DiveClubService) DeleteDiveClub(ctx context.Context, id int) error {
+	return service.DiveClubStore.DeleteDiveClub(ctx, id)
 }
 
-func (service *DiveClubService) CreateDiveClub(ctx context.Context, id int) (DiveClub, error) {
-	return DiveClub{}, ErrorNotImplemented
+func (service *DiveClubService) CreateDiveClub(ctx context.Context, dc DiveClub) (DiveClub, error) {
+	dc, err := service.DiveClubStore.CreateDiveClub(ctx, dc)
+	if err != nil {
+		return DiveClub{}, err
+	}
+	return dc, nil
 }
