@@ -42,9 +42,7 @@ func Run() error {
 
 	dcService := diveclub.NewDiveClubService(db)
 
-	port := ":8080"
 	fmt.Print("Application is starting...")
-	fmt.Println("listening on port ", port)
 	now := time.Now()
 	log.Println("Server started at: ", now.Local().Format(time.UnixDate))
 

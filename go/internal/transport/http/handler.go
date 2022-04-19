@@ -1,8 +1,13 @@
 package http
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -32,10 +37,6 @@ func NewHandler(service DiveClubService) *Handler {
 func (h *Handler) mapRoutes() {
 	fmt.Println("***\n*** mapping routes")
 	fmt.Println("*** /api/ping")
-	h.Router.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hi there\n")
-	})
-	fmt.Println("*** /api/ping")
 	h.Router.HandleFunc("/api/ping", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "pong\n")
 	})
@@ -43,9 +44,26 @@ func (h *Handler) mapRoutes() {
 }
 
 func (h *Handler) Serve() error {
-	if err := h.Server.ListenAndServe(); err != nil {
-		fmt.Println("*** Listen and serve failed: ", err)
-		return err
-	}
+	fmt.Println("Listening to ", h.Server.Addr)
+
+	// Run ListenAndServe in a separate go thread
+	go func() {
+		if err := h.Server.ListenAndServe(); err != nil {
+			log.Println("*** Listen and serve failed: ", err)
+		}
+	}()
+
+	// Wait for an os.Interrupt signal
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	<-c
+
+	// Since ListenAndServe runs in a go thread, we need to wait here
+	// until an OS Interrupt signal arrives, wait 15 seconds
+	ctx, cancal := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancal()
+	h.Server.Shutdown(ctx)
+
+	log.Println("Server shut down gracefully")
 	return nil
 }
