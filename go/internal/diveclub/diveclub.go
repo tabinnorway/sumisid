@@ -49,8 +49,8 @@ func (service *DiveClubService) GetDiveClub(ctx context.Context, id int) (DiveCl
 	return dc, nil
 }
 
-func (service *DiveClubService) UpdateDiveClub(ctx context.Context, dc DiveClub) (DiveClub, error) {
-	return service.DiveClubStore.UpdateDiveClub(ctx, dc.Id, dc)
+func (service *DiveClubService) UpdateDiveClub(ctx context.Context, id int, dc DiveClub) (DiveClub, error) {
+	return service.DiveClubStore.UpdateDiveClub(ctx, id, dc)
 }
 
 func (service *DiveClubService) DeleteDiveClub(ctx context.Context, id int) error {

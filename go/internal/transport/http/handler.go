@@ -12,8 +12,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type DiveClubService interface{}
-
 type Handler struct {
 	Router  *mux.Router
 	Service DiveClubService
@@ -40,6 +38,12 @@ func (h *Handler) mapRoutes() {
 	h.Router.HandleFunc("/api/ping", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "pong\n")
 	})
+
+	h.Router.HandleFunc("/api/v1/diveclubs/", h.PostDiveClub).Methods("POST")
+	h.Router.HandleFunc("/api/v1/diveclubs/{id}", h.PutDiveClub).Methods("PUT")
+	h.Router.HandleFunc("/api/v1/diveclubs/{id}", h.GetDiveClub).Methods("GET")
+	h.Router.HandleFunc("/api/v1/diveclubs/{id}", h.DeleteDiveClub).Methods("DELETE")
+
 	fmt.Println("*** finished mapping routes\n***")
 }
 

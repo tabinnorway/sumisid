@@ -58,36 +58,49 @@ func (d *Database) GetDiveClub(ctx context.Context, id int) (diveclub.DiveClub, 
 }
 
 func (d *Database) UpdateDiveClub(ctx context.Context, id int, dc diveclub.DiveClub) (diveclub.DiveClub, error) {
+	fmt.Println("Going to update diveclub")
 	row := DiveClubRow{
 		Id:              id,
 		Name:            dc.Name,
 		StreetAddress:   sql.NullString{String: dc.StreetAddress, Valid: true},
-		StreetNumber:    sql.NullString{String: dc.StreetAddress, Valid: true},
-		ZipCode:         sql.NullString{String: dc.StreetAddress, Valid: true},
-		PhoneNumber:     sql.NullString{String: dc.StreetAddress, Valid: true},
+		StreetNumber:    sql.NullString{String: dc.StreetNumber, Valid: true},
+		ZipCode:         sql.NullString{String: dc.ZipCode, Valid: true},
+		PhoneNumber:     sql.NullString{String: dc.PhoneNumber, Valid: true},
 		ContactPersonId: sql.NullInt32{Int32: int32(dc.ContactPersonId), Valid: dc.ContactPersonId > 0},
-		ExtraInfo:       sql.NullString{String: dc.StreetAddress, Valid: true},
+		ExtraInfo:       sql.NullString{String: dc.ExtraInfo, Valid: true},
 	}
-	rows, err := d.Client.NamedQueryContext(
+	rows, err := d.Client.ExecContext(
 		ctx,
 		`update diveclubs
-			set club_name = name,
-				street_address = :streetaddress,
-				street_number = :streetnumber,
-				zip = :zipcode,
-				phone_number = :phonenumber,
-				contact_person_id = :contactpersonid,
-				extra_info = extrainfo
-			where id = :id`,
-		row,
+			set club_name = $1,
+				street_address = $2,
+				street_number = $3,
+				zip = $4,
+				phone_number = $5,
+				contact_person_id = $6,
+				extra_info = $7
+			where id = $8`,
+		row.Name,
+		row.StreetAddress,
+		row.StreetNumber,
+		row.ZipCode,
+		row.PhoneNumber,
+		row.ContactPersonId,
+		row.ExtraInfo,
+		id,
 	)
 	if err != nil {
-		return diveclub.DiveClub{}, fmt.Errorf("error deleting dive club %w", err)
+		return diveclub.DiveClub{}, fmt.Errorf("error updating dive club %w", err)
 	}
-	if err := rows.Close(); err != nil {
-		return diveclub.DiveClub{}, fmt.Errorf("error closing diveclubs row %w", err)
+	numRows, err := rows.RowsAffected()
+	if err != nil {
+		return diveclub.DiveClub{}, fmt.Errorf("error updating dive club %w", err)
 	}
-	return d.GetDiveClub(ctx, dc.Id)
+	fmt.Println("Number of rows affected by update ", numRows)
+	if err != nil {
+		return diveclub.DiveClub{}, fmt.Errorf("error updating dive club %w", err)
+	}
+	return d.GetDiveClub(ctx, id)
 }
 
 func (d *Database) DeleteDiveClub(ctx context.Context, id int) error {
