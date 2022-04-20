@@ -14,7 +14,7 @@ var (
 type DiveClub struct {
 	Id              int    `json:"id"`
 	Name            string `json:"name"`
-	StreetAddress   string `json:"addressId"`
+	StreetAddress   string `json:"streetAddress"`
 	StreetNumber    string `json:"streetNumber"`
 	ZipCode         string `json:"zipCode"`
 	PhoneNumber     string `json:"phoneNumber"`

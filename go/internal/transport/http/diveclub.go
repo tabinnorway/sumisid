@@ -2,7 +2,10 @@ package http
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -63,7 +66,12 @@ func (h *Handler) GetDiveClub(w http.ResponseWriter, r *http.Request) {
 
 	dc, err := h.Service.GetDiveClub(r.Context(), id)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			NotFoundError(w, "Club")
+			return
+		}
 		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Error: %s", err.Error())
 		return
 	}
 
@@ -73,5 +81,27 @@ func (h *Handler) GetDiveClub(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (h *Handler) DeleteDiveClub(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	_, err = h.Service.GetDiveClub(r.Context(), id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			NotFoundError(w, "Club")
+			return
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
+	err = h.Service.DeleteDiveClub(r.Context(), id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	EntityWasDeleted(w, "Club")
+	return
 }

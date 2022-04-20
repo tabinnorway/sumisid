@@ -39,7 +39,7 @@ func (h *Handler) mapRoutes() {
 		fmt.Fprintf(w, "pong\n")
 	})
 
-	h.Router.HandleFunc("/api/v1/diveclubs/", h.PostDiveClub).Methods("POST")
+	h.Router.HandleFunc("/api/v1/diveclubs", h.PostDiveClub).Methods("POST")
 	h.Router.HandleFunc("/api/v1/diveclubs/{id}", h.PutDiveClub).Methods("PUT")
 	h.Router.HandleFunc("/api/v1/diveclubs/{id}", h.GetDiveClub).Methods("GET")
 	h.Router.HandleFunc("/api/v1/diveclubs/{id}", h.DeleteDiveClub).Methods("DELETE")
