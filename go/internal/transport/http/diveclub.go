@@ -11,7 +11,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/tabinnorway/sumisid/go/internal/diveclub"
+	diveclub "github.com/tabinnorway/sumisid/go/internal/services"
 )
 
 type DiveClubService interface {

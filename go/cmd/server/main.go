@@ -7,7 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 	db "github.com/tabinnorway/sumisid/go/internal/database"
-	"github.com/tabinnorway/sumisid/go/internal/diveclub"
+	diveclub "github.com/tabinnorway/sumisid/go/internal/services"
 	transportHttp "github.com/tabinnorway/sumisid/go/internal/transport/http"
 )
 

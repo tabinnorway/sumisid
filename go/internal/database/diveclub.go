@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/tabinnorway/sumisid/go/internal/diveclub"
+	diveclub "github.com/tabinnorway/sumisid/go/internal/services"
 )
 
 func convertRowToDiveClub(dcr DiveClubRow) diveclub.DiveClub {
