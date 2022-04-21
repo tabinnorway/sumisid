@@ -25,6 +25,7 @@ type DiveClub struct {
 // DiveClubStore - this interface defines all methods that our service needs
 // to manipulate the storage of dive clubs
 type DiveClubStore interface {
+	GetAllDiveClub(context.Context) ([]DiveClub, error)
 	GetDiveClub(context.Context, int) (DiveClub, error)
 	UpdateDiveClub(ctx context.Context, id int, dc DiveClub) (DiveClub, error)
 	DeleteDiveClub(ctx context.Context, id int) error
@@ -39,6 +40,14 @@ func NewDiveClubService(diveClubStore DiveClubStore) *DiveClubService {
 	return &DiveClubService{
 		DiveClubStore: diveClubStore,
 	}
+}
+
+func (service *DiveClubService) GetAllDiveClub(ctx context.Context) ([]DiveClub, error) {
+	dcs, err := service.DiveClubStore.GetAllDiveClub(ctx)
+	if err != nil {
+		return []DiveClub{}, err
+	}
+	return dcs, nil
 }
 
 func (service *DiveClubService) GetDiveClub(ctx context.Context, id int) (DiveClub, error) {

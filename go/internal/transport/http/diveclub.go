@@ -17,6 +17,7 @@ import (
 type DiveClubService interface {
 	CreateDiveClub(ctx context.Context, dc diveclub.DiveClub) (diveclub.DiveClub, error)
 	UpdateDiveClub(ctx context.Context, id int, newDc diveclub.DiveClub) (diveclub.DiveClub, error)
+	GetAllDiveClub(ctx context.Context) ([]diveclub.DiveClub, error)
 	GetDiveClub(ctx context.Context, id int) (diveclub.DiveClub, error)
 	DeleteDiveClub(ctx context.Context, id int) error
 }
@@ -56,6 +57,24 @@ func (h *Handler) PutDiveClub(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (h *Handler) GetAllDiveClub(w http.ResponseWriter, r *http.Request) {
+	dcs, err := h.Service.GetAllDiveClub(r.Context())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			NotFoundError(w, "Club")
+			return
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Error: %s", err.Error())
+		return
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(dcs); err != nil {
+		panic(err)
+	}
+}
+
 func (h *Handler) GetDiveClub(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
@@ -80,6 +99,7 @@ func (h *Handler) GetDiveClub(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 }
+
 func (h *Handler) DeleteDiveClub(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
