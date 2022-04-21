@@ -13,14 +13,16 @@ import (
 )
 
 type Handler struct {
-	Router  *mux.Router
-	Service DiveClubService
-	Server  *http.Server
+	Router          *mux.Router
+	DiveClubService DiveClubService
+	PersonService   PersonService
+	Server          *http.Server
 }
 
-func NewHandler(service DiveClubService) *Handler {
+func NewHandler(dcService DiveClubService, pService PersonService) *Handler {
 	h := &Handler{
-		Service: service,
+		DiveClubService: dcService,
+		PersonService:   pService,
 	}
 	h.Router = mux.NewRouter()
 	h.mapRoutes()
@@ -33,19 +35,21 @@ func NewHandler(service DiveClubService) *Handler {
 }
 
 func (h *Handler) mapRoutes() {
-	fmt.Println("***\n*** mapping routes")
-	fmt.Println("*** /api/ping")
 	h.Router.HandleFunc("/api/ping", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "pong\n")
 	})
 
-	h.Router.HandleFunc("/api/v1/diveclubs", h.PostDiveClub).Methods("POST")
+	h.Router.HandleFunc("/api/v1/people", h.GetAllPerson).Methods("GET")
+	h.Router.HandleFunc("/api/v1/people", h.PostPerson).Methods("POST")
+	h.Router.HandleFunc("/api/v1/people/{id}", h.PutPerson).Methods("PUT")
+	h.Router.HandleFunc("/api/v1/people/{id}", h.GetPerson).Methods("GET")
+	h.Router.HandleFunc("/api/v1/people/{id}", h.DeletePerson).Methods("DELETE")
+
 	h.Router.HandleFunc("/api/v1/diveclubs", h.GetAllDiveClub).Methods("GET")
+	h.Router.HandleFunc("/api/v1/diveclubs", h.PostDiveClub).Methods("POST")
 	h.Router.HandleFunc("/api/v1/diveclubs/{id}", h.PutDiveClub).Methods("PUT")
 	h.Router.HandleFunc("/api/v1/diveclubs/{id}", h.GetDiveClub).Methods("GET")
 	h.Router.HandleFunc("/api/v1/diveclubs/{id}", h.DeleteDiveClub).Methods("DELETE")
-
-	fmt.Println("*** finished mapping routes\n***")
 }
 
 func (h *Handler) Serve() error {

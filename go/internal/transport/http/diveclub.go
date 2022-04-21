@@ -11,23 +11,23 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	diveclub "github.com/tabinnorway/sumisid/go/internal/services"
+	services "github.com/tabinnorway/sumisid/go/internal/services"
 )
 
 type DiveClubService interface {
-	CreateDiveClub(ctx context.Context, dc diveclub.DiveClub) (diveclub.DiveClub, error)
-	UpdateDiveClub(ctx context.Context, id int, newDc diveclub.DiveClub) (diveclub.DiveClub, error)
-	GetAllDiveClub(ctx context.Context) ([]diveclub.DiveClub, error)
-	GetDiveClub(ctx context.Context, id int) (diveclub.DiveClub, error)
+	CreateDiveClub(ctx context.Context, dc services.DiveClub) (services.DiveClub, error)
+	UpdateDiveClub(ctx context.Context, id int, newDc services.DiveClub) (services.DiveClub, error)
+	GetAllDiveClub(ctx context.Context) ([]services.DiveClub, error)
+	GetDiveClub(ctx context.Context, id int) (services.DiveClub, error)
 	DeleteDiveClub(ctx context.Context, id int) error
 }
 
 func (h *Handler) PostDiveClub(w http.ResponseWriter, r *http.Request) {
-	var newDc diveclub.DiveClub
+	var newDc services.DiveClub
 	if err := json.NewDecoder(r.Body).Decode(&newDc); err != nil {
 		log.Print(err)
 	}
-	dc, err := h.Service.CreateDiveClub(r.Context(), newDc)
+	dc, err := h.DiveClubService.CreateDiveClub(r.Context(), newDc)
 	if err != nil {
 		log.Print(err)
 	}
@@ -45,12 +45,19 @@ func (h *Handler) PutDiveClub(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	var newDc diveclub.DiveClub
+
+	oldDc, err := h.DiveClubService.GetDiveClub(r.Context(), id)
+	if err != nil || oldDc.Id != id {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	var newDc services.DiveClub
 	if err := json.NewDecoder(r.Body).Decode(&newDc); err != nil {
 		log.Print(err)
 	}
 
-	dc, err := h.Service.UpdateDiveClub(r.Context(), id, newDc)
+	dc, err := h.DiveClubService.UpdateDiveClub(r.Context(), id, newDc)
 	w.Header().Add("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(dc); err != nil {
 		panic(err)
@@ -58,7 +65,7 @@ func (h *Handler) PutDiveClub(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetAllDiveClub(w http.ResponseWriter, r *http.Request) {
-	dcs, err := h.Service.GetAllDiveClub(r.Context())
+	dcs, err := h.DiveClubService.GetAllDiveClub(r.Context())
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			NotFoundError(w, "Club")
@@ -83,7 +90,7 @@ func (h *Handler) GetDiveClub(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dc, err := h.Service.GetDiveClub(r.Context(), id)
+	dc, err := h.DiveClubService.GetDiveClub(r.Context(), id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			NotFoundError(w, "Club")
@@ -107,7 +114,7 @@ func (h *Handler) DeleteDiveClub(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	_, err = h.Service.GetDiveClub(r.Context(), id)
+	_, err = h.DiveClubService.GetDiveClub(r.Context(), id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			NotFoundError(w, "Club")
@@ -117,7 +124,7 @@ func (h *Handler) DeleteDiveClub(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.Service.DeleteDiveClub(r.Context(), id)
+	err = h.DiveClubService.DeleteDiveClub(r.Context(), id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
