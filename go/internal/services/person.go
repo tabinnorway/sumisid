@@ -6,16 +6,16 @@ import (
 )
 
 type Person struct {
-	Id          int
-	Email       string
-	FirstName   string
-	MiddleName  string
-	LastName    string
-	BirthDate   time.Time
-	IsAdmin     bool
-	PhoneNumber string
-	MainClubId  int
-	MainClub    DiveClub
+	Id          int       `json:"id"`
+	Email       string    `json:"email"`
+	FirstName   string    `json:"firstName"`
+	MiddleName  string    `json:"middleName"`
+	LastName    string    `json:"lastName"`
+	BirthDate   time.Time `json:"birthDate"`
+	IsAdmin     bool      `json:"isAdmin"`
+	PhoneNumber string    `json:"phoneNumber"`
+	MainClubId  int       `json:"mainClubId"`
+	MainClub    DiveClub  `json:"mainClub"`
 }
 
 // PersonStore - this interface defines all methods that our service needs
