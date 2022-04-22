@@ -32,7 +32,6 @@ func (h *Handler) PostDiveClub(w http.ResponseWriter, r *http.Request) {
 		log.Print(err)
 	}
 
-	w.Header().Add("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(dc); err != nil {
 		panic(err)
 	}
@@ -58,7 +57,6 @@ func (h *Handler) PutDiveClub(w http.ResponseWriter, r *http.Request) {
 	}
 
 	dc, err := h.DiveClubService.UpdateDiveClub(r.Context(), id, newDc)
-	w.Header().Add("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(dc); err != nil {
 		panic(err)
 	}
@@ -76,7 +74,6 @@ func (h *Handler) GetAllDiveClub(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Add("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(dcs); err != nil {
 		panic(err)
 	}
@@ -101,7 +98,6 @@ func (h *Handler) GetDiveClub(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Add("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(dc); err != nil {
 		panic(err)
 	}

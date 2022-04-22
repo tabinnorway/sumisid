@@ -32,7 +32,6 @@ func (h *Handler) PostPerson(w http.ResponseWriter, r *http.Request) {
 		log.Print(err)
 	}
 
-	w.Header().Add("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(dc); err != nil {
 		panic(err)
 	}
@@ -59,7 +58,6 @@ func (h *Handler) PutPerson(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Add("Content-Type", "application/json")
 	dc, err := h.PersonService.UpdatePerson(r.Context(), id, newPerson)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -84,7 +82,6 @@ func (h *Handler) GetAllPerson(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Add("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(dcs); err != nil {
 		panic(err)
 	}
@@ -116,7 +113,6 @@ func (h *Handler) GetPerson(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	w.Header().Add("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(p); err != nil {
 		panic(err)
 	}

@@ -25,6 +25,8 @@ func NewHandler(dcService DiveClubService, pService PersonService) *Handler {
 		PersonService:   pService,
 	}
 	h.Router = mux.NewRouter()
+	h.Router.Use(JSONMiddleware)
+	h.Router.Use(LoggingMiddleware)
 	h.mapRoutes()
 
 	h.Server = &http.Server{
@@ -39,17 +41,19 @@ func (h *Handler) mapRoutes() {
 		fmt.Fprintf(w, "pong\n")
 	})
 
+	h.Router.Handle("/", http.FileServer(http.Dir("./views")))
+
 	h.Router.HandleFunc("/api/v1/people", h.GetAllPerson).Methods("GET")
 	h.Router.HandleFunc("/api/v1/people", h.PostPerson).Methods("POST")
 	h.Router.HandleFunc("/api/v1/people/{id}", h.PutPerson).Methods("PUT")
 	h.Router.HandleFunc("/api/v1/people/{id}", h.GetPerson).Methods("GET")
 	h.Router.HandleFunc("/api/v1/people/{id}", h.DeletePerson).Methods("DELETE")
 
-	h.Router.HandleFunc("/api/v1/diveclubs", h.GetAllDiveClub).Methods("GET")
-	h.Router.HandleFunc("/api/v1/diveclubs", h.PostDiveClub).Methods("POST")
-	h.Router.HandleFunc("/api/v1/diveclubs/{id}", h.PutDiveClub).Methods("PUT")
-	h.Router.HandleFunc("/api/v1/diveclubs/{id}", h.GetDiveClub).Methods("GET")
-	h.Router.HandleFunc("/api/v1/diveclubs/{id}", h.DeleteDiveClub).Methods("DELETE")
+	h.Router.HandleFunc("/api/v1/clubs", h.GetAllDiveClub).Methods("GET")
+	h.Router.HandleFunc("/api/v1/clubs/{id}", h.GetDiveClub).Methods("GET")
+	h.Router.HandleFunc("/api/v1/clubs", h.PostDiveClub).Methods("POST")
+	h.Router.HandleFunc("/api/v1/clubs/{id}", h.PutDiveClub).Methods("PUT")
+	h.Router.HandleFunc("/api/v1/clubs/{id}", h.DeleteDiveClub).Methods("DELETE")
 }
 
 func (h *Handler) Serve() error {
@@ -68,8 +72,8 @@ func (h *Handler) Serve() error {
 	<-c
 
 	// Since ListenAndServe runs in a go thread, we need to wait here
-	// until an OS Interrupt signal arrives, wait 15 seconds
-	ctx, cancal := context.WithTimeout(context.Background(), 15*time.Second)
+	// until an OS Interrupt signal arrives, wait 30 seconds max
+	ctx, cancal := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancal()
 	h.Server.Shutdown(ctx)
 
