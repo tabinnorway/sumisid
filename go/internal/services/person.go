@@ -15,7 +15,7 @@ type Person struct {
 	IsAdmin     bool      `json:"isAdmin"`
 	PhoneNumber string    `json:"phoneNumber"`
 	MainClubId  int       `json:"mainClubId"`
-	MainClub    DiveClub  `json:"mainClub"`
+	MainClub    Club      `json:"mainClub"`
 }
 
 // PersonStore - this interface defines all methods that our service needs

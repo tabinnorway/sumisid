@@ -22,7 +22,7 @@ func Run() error {
 		return err
 	}
 
-	dcService := diveclub.NewDiveClubService(db)
+	dcService := diveclub.NewClubService(db)
 	personService := services.NewPersonService(db)
 
 	fmt.Print("Application is starting...")

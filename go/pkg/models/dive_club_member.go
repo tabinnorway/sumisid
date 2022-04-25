@@ -1,6 +1,6 @@
 package models
 
-type DiveClubMember struct {
+type ClubMember struct {
 	Id       int `json:"id"`
 	PersonId int `json:"personId"`
 	ClubId   int `json:"diveClubId"`

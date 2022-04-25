@@ -13,16 +13,16 @@ import (
 )
 
 type Handler struct {
-	Router          *mux.Router
-	DiveClubService DiveClubService
-	PersonService   PersonService
-	Server          *http.Server
+	Router        *mux.Router
+	ClubService   ClubService
+	PersonService PersonService
+	Server        *http.Server
 }
 
-func NewHandler(dcService DiveClubService, pService PersonService) *Handler {
+func NewHandler(dcService ClubService, pService PersonService) *Handler {
 	h := &Handler{
-		DiveClubService: dcService,
-		PersonService:   pService,
+		ClubService:   dcService,
+		PersonService: pService,
 	}
 	h.Router = mux.NewRouter()
 	h.Router.Use(JSONMiddleware)
@@ -49,11 +49,11 @@ func (h *Handler) mapRoutes() {
 	h.Router.HandleFunc("/api/v1/people/{id}", h.GetPerson).Methods("GET")
 	h.Router.HandleFunc("/api/v1/people/{id}", h.DeletePerson).Methods("DELETE")
 
-	h.Router.HandleFunc("/api/v1/clubs", h.GetAllDiveClub).Methods("GET")
-	h.Router.HandleFunc("/api/v1/clubs/{id}", h.GetDiveClub).Methods("GET")
-	h.Router.HandleFunc("/api/v1/clubs", h.PostDiveClub).Methods("POST")
-	h.Router.HandleFunc("/api/v1/clubs/{id}", h.PutDiveClub).Methods("PUT")
-	h.Router.HandleFunc("/api/v1/clubs/{id}", h.DeleteDiveClub).Methods("DELETE")
+	h.Router.HandleFunc("/api/v1/clubs", h.GetAllClub).Methods("GET")
+	h.Router.HandleFunc("/api/v1/clubs/{id}", h.GetClub).Methods("GET")
+	h.Router.HandleFunc("/api/v1/clubs", h.PostClub).Methods("POST")
+	h.Router.HandleFunc("/api/v1/clubs/{id}", h.PutClub).Methods("PUT")
+	h.Router.HandleFunc("/api/v1/clubs/{id}", h.DeleteClub).Methods("DELETE")
 }
 
 func (h *Handler) Serve() error {

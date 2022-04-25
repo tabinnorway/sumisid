@@ -5,7 +5,7 @@ package mocks
 // 	"github.com/tabinnorway/sumisid/go/internal/divec"
 // )
 
-// var DiveClubs = []models.DiveClub{
+// var Clubs = []models.Club{
 // 	{
 // 		Id:              1,
 // 		Name:            "Bergen Stupeklubb",

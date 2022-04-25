@@ -14,20 +14,20 @@ import (
 	services "github.com/tabinnorway/sumisid/go/internal/services"
 )
 
-type DiveClubService interface {
-	CreateDiveClub(ctx context.Context, dc services.DiveClub) (services.DiveClub, error)
-	UpdateDiveClub(ctx context.Context, id int, newDc services.DiveClub) (services.DiveClub, error)
-	GetAllDiveClub(ctx context.Context) ([]services.DiveClub, error)
-	GetDiveClub(ctx context.Context, id int) (services.DiveClub, error)
-	DeleteDiveClub(ctx context.Context, id int) error
+type ClubService interface {
+	CreateClub(ctx context.Context, dc services.Club) (services.Club, error)
+	UpdateClub(ctx context.Context, id int, newDc services.Club) (services.Club, error)
+	GetAllClub(ctx context.Context) ([]services.Club, error)
+	GetClub(ctx context.Context, id int) (services.Club, error)
+	DeleteClub(ctx context.Context, id int) error
 }
 
-func (h *Handler) PostDiveClub(w http.ResponseWriter, r *http.Request) {
-	var newDc services.DiveClub
+func (h *Handler) PostClub(w http.ResponseWriter, r *http.Request) {
+	var newDc services.Club
 	if err := json.NewDecoder(r.Body).Decode(&newDc); err != nil {
 		log.Print(err)
 	}
-	dc, err := h.DiveClubService.CreateDiveClub(r.Context(), newDc)
+	dc, err := h.ClubService.CreateClub(r.Context(), newDc)
 	if err != nil {
 		log.Print(err)
 	}
@@ -37,7 +37,7 @@ func (h *Handler) PostDiveClub(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *Handler) PutDiveClub(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) PutClub(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -45,25 +45,25 @@ func (h *Handler) PutDiveClub(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	oldDc, err := h.DiveClubService.GetDiveClub(r.Context(), id)
+	oldDc, err := h.ClubService.GetClub(r.Context(), id)
 	if err != nil || oldDc.Id != id {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	var newDc services.DiveClub
+	var newDc services.Club
 	if err := json.NewDecoder(r.Body).Decode(&newDc); err != nil {
 		log.Print(err)
 	}
 
-	dc, err := h.DiveClubService.UpdateDiveClub(r.Context(), id, newDc)
+	dc, err := h.ClubService.UpdateClub(r.Context(), id, newDc)
 	if err := json.NewEncoder(w).Encode(dc); err != nil {
 		panic(err)
 	}
 }
 
-func (h *Handler) GetAllDiveClub(w http.ResponseWriter, r *http.Request) {
-	dcs, err := h.DiveClubService.GetAllDiveClub(r.Context())
+func (h *Handler) GetAllClub(w http.ResponseWriter, r *http.Request) {
+	dcs, err := h.ClubService.GetAllClub(r.Context())
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			NotFoundError(w, "Club")
@@ -79,7 +79,7 @@ func (h *Handler) GetAllDiveClub(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *Handler) GetDiveClub(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetClub(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -87,7 +87,7 @@ func (h *Handler) GetDiveClub(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dc, err := h.DiveClubService.GetDiveClub(r.Context(), id)
+	dc, err := h.ClubService.GetClub(r.Context(), id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			NotFoundError(w, "Club")
@@ -103,14 +103,14 @@ func (h *Handler) GetDiveClub(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *Handler) DeleteDiveClub(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) DeleteClub(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	_, err = h.DiveClubService.GetDiveClub(r.Context(), id)
+	_, err = h.ClubService.GetClub(r.Context(), id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			NotFoundError(w, "Club")
@@ -120,7 +120,7 @@ func (h *Handler) DeleteDiveClub(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.DiveClubService.DeleteDiveClub(r.Context(), id)
+	err = h.ClubService.DeleteClub(r.Context(), id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

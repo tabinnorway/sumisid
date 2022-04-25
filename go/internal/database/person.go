@@ -46,9 +46,9 @@ func (d *Database) GetAllPerson(ctx context.Context) ([]services.Person, error) 
 	retval := []services.Person{}
 	for i := range res {
 		person := convertRowToPerson(res[i])
-		person.MainClub, err = d.GetDiveClub(ctx, person.MainClubId)
+		person.MainClub, err = d.GetClub(ctx, person.MainClubId)
 		if err != nil {
-			person.MainClub = services.DiveClub{}
+			person.MainClub = services.Club{}
 		}
 		retval = append(retval, person)
 	}
@@ -73,7 +73,7 @@ func (d *Database) GetPerson(ctx context.Context, id int) (services.Person, erro
 		return services.Person{}, fmt.Errorf("error fetching person %w", err)
 	}
 	retval := convertRowToPerson(clubRow)
-	retval.MainClub, err = d.GetDiveClub(ctx, retval.MainClubId)
+	retval.MainClub, err = d.GetClub(ctx, retval.MainClubId)
 	return retval, nil
 }
 

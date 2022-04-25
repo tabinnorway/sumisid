@@ -107,9 +107,9 @@ func (h *Handler) GetPerson(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if p.MainClubId > 0 {
-		p.MainClub, err = h.DiveClubService.GetDiveClub(r.Context(), p.MainClubId)
+		p.MainClub, err = h.ClubService.GetClub(r.Context(), p.MainClubId)
 		if err != nil {
-			p.MainClub = services.DiveClub{}
+			p.MainClub = services.Club{}
 		}
 	}
 

@@ -8,8 +8,8 @@ import (
 	"github.com/tabinnorway/sumisid/go/internal/services"
 )
 
-func convertRowToDiveClub(dcr DiveClubRow) services.DiveClub {
-	return services.DiveClub{
+func convertRowToClub(dcr ClubRow) services.Club {
+	return services.Club{
 		Id:              dcr.Id,
 		Name:            dcr.Club_name,
 		StreetAddress:   dcr.Street_address.String,
@@ -21,7 +21,7 @@ func convertRowToDiveClub(dcr DiveClubRow) services.DiveClub {
 	}
 }
 
-type DiveClubRow struct {
+type ClubRow struct {
 	Id                int
 	Club_name         string
 	Street_address    sql.NullString
@@ -32,24 +32,24 @@ type DiveClubRow struct {
 	Extra_info        sql.NullString
 }
 
-func (d *Database) GetAllDiveClub(ctx context.Context) ([]services.DiveClub, error) {
-	res := []DiveClubRow{}
+func (d *Database) GetAllClub(ctx context.Context) ([]services.Club, error) {
+	res := []ClubRow{}
 
 	err := d.Client.Select(&res, `select * from diveclubs`)
 	if err != nil {
 		fmt.Println("Could not retrieve dive clubs ", err.Error())
-		return []services.DiveClub{}, err
+		return []services.Club{}, err
 	}
 
-	retval := []services.DiveClub{}
+	retval := []services.Club{}
 	for i := range res {
-		retval = append(retval, convertRowToDiveClub(res[i]))
+		retval = append(retval, convertRowToClub(res[i]))
 	}
 	return retval, nil
 }
 
-func (d *Database) GetDiveClub(ctx context.Context, id int) (services.DiveClub, error) {
-	var clubRow DiveClubRow
+func (d *Database) GetClub(ctx context.Context, id int) (services.Club, error) {
+	var clubRow ClubRow
 	row := d.Client.QueryRowContext(ctx, `select * from diveclubs where id = $1 order by id`, id)
 	err := row.Scan(
 		&clubRow.Id,
@@ -62,14 +62,14 @@ func (d *Database) GetDiveClub(ctx context.Context, id int) (services.DiveClub, 
 		&clubRow.Extra_info,
 	)
 	if err != nil {
-		return services.DiveClub{}, fmt.Errorf("error fetching dive club %w", err)
+		return services.Club{}, fmt.Errorf("error fetching dive club %w", err)
 	}
-	return convertRowToDiveClub(clubRow), nil
+	return convertRowToClub(clubRow), nil
 }
 
-func (d *Database) UpdateDiveClub(ctx context.Context, id int, dc services.DiveClub) (services.DiveClub, error) {
+func (d *Database) UpdateClub(ctx context.Context, id int, dc services.Club) (services.Club, error) {
 	fmt.Println("Going to update diveclub")
-	row := DiveClubRow{
+	row := ClubRow{
 		Id:                id,
 		Club_name:         dc.Name,
 		Street_address:    sql.NullString{String: dc.StreetAddress, Valid: true},
@@ -100,20 +100,20 @@ func (d *Database) UpdateDiveClub(ctx context.Context, id int, dc services.DiveC
 		id,
 	)
 	if err != nil {
-		return services.DiveClub{}, fmt.Errorf("error updating dive club %w", err)
+		return services.Club{}, fmt.Errorf("error updating dive club %w", err)
 	}
 	numRows, err := rows.RowsAffected()
 	if err != nil {
-		return services.DiveClub{}, fmt.Errorf("error updating dive club %w", err)
+		return services.Club{}, fmt.Errorf("error updating dive club %w", err)
 	}
 	fmt.Println("Number of rows affected by update ", numRows)
 	if err != nil {
-		return services.DiveClub{}, fmt.Errorf("error updating dive club %w", err)
+		return services.Club{}, fmt.Errorf("error updating dive club %w", err)
 	}
-	return d.GetDiveClub(ctx, id)
+	return d.GetClub(ctx, id)
 }
 
-func (d *Database) DeleteDiveClub(ctx context.Context, id int) error {
+func (d *Database) DeleteClub(ctx context.Context, id int) error {
 	_, err := d.Client.ExecContext(ctx, `delete from diveclubs where id = $1`, id)
 	if err != nil {
 		return fmt.Errorf("error deleting dive club %w", err)
@@ -121,7 +121,7 @@ func (d *Database) DeleteDiveClub(ctx context.Context, id int) error {
 	return nil
 }
 
-func (d *Database) CreateDiveClub(ctx context.Context, dc services.DiveClub) (services.DiveClub, error) {
+func (d *Database) CreateClub(ctx context.Context, dc services.Club) (services.Club, error) {
 	lastInsertedId := 0
 	err := d.Client.QueryRow(
 		`insert into diveclubs (club_name, street_address, street_number, zip, phone_number, contact_person_id, extra_info)
@@ -137,8 +137,8 @@ func (d *Database) CreateDiveClub(ctx context.Context, dc services.DiveClub) (se
 	).Scan(&lastInsertedId)
 
 	if err != nil {
-		return services.DiveClub{}, fmt.Errorf("failed to insert diveclub: %w", err)
+		return services.Club{}, fmt.Errorf("failed to insert diveclub: %w", err)
 	}
 
-	return d.GetDiveClub(ctx, lastInsertedId)
+	return d.GetClub(ctx, lastInsertedId)
 }

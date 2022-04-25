@@ -13,17 +13,17 @@ package handlers
 // 	"github.com/tabinnorway/sumisid/go/pkg/models"
 // )
 
-// func GetAllDiveClubs(w http.ResponseWriter, r *http.Request) {
-// 	OK(w, mocks.DiveClubs)
+// func GetAllClubs(w http.ResponseWriter, r *http.Request) {
+// 	OK(w, mocks.Clubs)
 // }
 
-// func GetDiveClub(w http.ResponseWriter, r *http.Request) {
+// func GetClub(w http.ResponseWriter, r *http.Request) {
 // 	// Get the dive club Id requested
 // 	vars := mux.Vars(r)
 // 	id, _ := strconv.Atoi(vars["id"])
 
 // 	// Find the dive club with that id
-// 	for _, diveClub := range mocks.DiveClubs {
+// 	for _, diveClub := range mocks.Clubs {
 // 		if diveClub.Id == id {
 // 			OK(w, diveClub)
 // 			return
@@ -32,23 +32,23 @@ package handlers
 // 	NotFound(w)
 // }
 
-// func AddDiveClub(w http.ResponseWriter, r *http.Request) {
+// func AddClub(w http.ResponseWriter, r *http.Request) {
 // 	// Read dive club from request body
 // 	defer r.Body.Close()
 // 	body, err := ioutil.ReadAll(r.Body)
 // 	if err != nil {
 // 		log.Fatalln(err)
 // 	}
-// 	var diveClub models.DiveClub
+// 	var diveClub models.Club
 // 	json.Unmarshal(body, &diveClub)
 
 // 	// Append dive club to list
 // 	diveClub.Id = rand.Int()
-// 	mocks.DiveClubs = append(mocks.DiveClubs, diveClub)
+// 	mocks.Clubs = append(mocks.Clubs, diveClub)
 // 	Created(w, diveClub)
 // }
 
-// func UpdateDiveClub(w http.ResponseWriter, r *http.Request) {
+// func UpdateClub(w http.ResponseWriter, r *http.Request) {
 // 	// get the id
 // 	vars := mux.Vars(r)
 // 	id, _ := strconv.Atoi(vars["id"])
@@ -59,20 +59,20 @@ package handlers
 // 	if err != nil {
 // 		log.Fatalln(err)
 // 	}
-// 	var updatedDiveClub models.DiveClub
-// 	json.Unmarshal(body, &updatedDiveClub)
+// 	var updatedClub models.Club
+// 	json.Unmarshal(body, &updatedClub)
 
-// 	for index, diveClub := range mocks.DiveClubs {
+// 	for index, diveClub := range mocks.Clubs {
 // 		if diveClub.Id == id {
 // 			// If we find the dive club, update it
-// 			diveClub.Name = updatedDiveClub.Name
-// 			diveClub.StreetAddress = updatedDiveClub.StreetAddress
-// 			diveClub.StreetNumber = updatedDiveClub.StreetNumber
-// 			diveClub.ZipCode = updatedDiveClub.ZipCode
-// 			diveClub.PhoneNumber = updatedDiveClub.PhoneNumber
-// 			diveClub.ContactPersonId = updatedDiveClub.ContactPersonId
-// 			diveClub.ExtraInfo = updatedDiveClub.ExtraInfo
-// 			mocks.DiveClubs[index] = diveClub
+// 			diveClub.Name = updatedClub.Name
+// 			diveClub.StreetAddress = updatedClub.StreetAddress
+// 			diveClub.StreetNumber = updatedClub.StreetNumber
+// 			diveClub.ZipCode = updatedClub.ZipCode
+// 			diveClub.PhoneNumber = updatedClub.PhoneNumber
+// 			diveClub.ContactPersonId = updatedClub.ContactPersonId
+// 			diveClub.ExtraInfo = updatedClub.ExtraInfo
+// 			mocks.Clubs[index] = diveClub
 
 // 			OK(w, diveClub)
 // 			return
@@ -81,15 +81,15 @@ package handlers
 // 	NotFound(w)
 // }
 
-// func DeleteDiveClub(w http.ResponseWriter, r *http.Request) {
+// func DeleteClub(w http.ResponseWriter, r *http.Request) {
 // 	// Get the dive club Id requested
 // 	vars := mux.Vars(r)
 // 	id, _ := strconv.Atoi(vars["id"])
 
 // 	// Find the dive club with that id
-// 	for index, diveClub := range mocks.DiveClubs {
+// 	for index, diveClub := range mocks.Clubs {
 // 		if diveClub.Id == id {
-// 			mocks.DiveClubs = append(mocks.DiveClubs[:index], mocks.DiveClubs[index+1:]...)
+// 			mocks.Clubs = append(mocks.Clubs[:index], mocks.Clubs[index+1:]...)
 // 			// If we find the dive club, delete it
 // 			w.WriteHeader(http.StatusNoContent)
 // 			return
