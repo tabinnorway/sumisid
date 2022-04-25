@@ -23,7 +23,7 @@ type Club struct {
 }
 
 // ClubStore - this interface defines all methods that our service needs
-// to manipulate the storage of dive clubs
+// to manipulate the storage of clubs
 type ClubStore interface {
 	GetAllClub(context.Context) ([]Club, error)
 	GetClub(context.Context, int) (Club, error)
@@ -36,9 +36,9 @@ type ClubService struct {
 	ClubStore ClubStore
 }
 
-func NewClubService(diveClubStore ClubStore) *ClubService {
+func NewClubService(clubStore ClubStore) *ClubService {
 	return &ClubService{
-		ClubStore: diveClubStore,
+		ClubStore: clubStore,
 	}
 }
 

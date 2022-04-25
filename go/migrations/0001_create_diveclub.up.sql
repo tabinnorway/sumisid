@@ -1,4 +1,4 @@
-create table if not exists diveclubs (
+create table if not exists clubs (
     id serial primary key,
     club_name varchar(100) not null,
     street_address varchar(255),
@@ -41,7 +41,7 @@ create table if not exists competitions (
     comments text
 );
 
-alter table diveclubs
+alter table clubs
     add constraint fk_contact_person
     foreign key (contact_person_id)
     references people(id);
@@ -49,7 +49,7 @@ alter table diveclubs
 alter table people
     add constraint fk_main_club
     foreign key(main_club_id)
-    references diveclubs(id);
+    references clubs(id);
 
 alter table competitions
     add constraint fk_competition_location
@@ -59,7 +59,7 @@ alter table competitions
 alter table competitions
     add constraint fk_competition_arranging_club
     foreign key(arranging_club_id)
-    references diveclubs(id);
+    references clubs(id);
 
 alter table locations
     add constraint fk_location_contact_person

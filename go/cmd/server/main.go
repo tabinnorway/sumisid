@@ -7,7 +7,7 @@ import (
 
 	db "github.com/tabinnorway/sumisid/go/internal/database"
 	"github.com/tabinnorway/sumisid/go/internal/services"
-	diveclub "github.com/tabinnorway/sumisid/go/internal/services"
+	club "github.com/tabinnorway/sumisid/go/internal/services"
 	transportHttp "github.com/tabinnorway/sumisid/go/internal/transport/http"
 )
 
@@ -22,7 +22,7 @@ func Run() error {
 		return err
 	}
 
-	dcService := diveclub.NewClubService(db)
+	dcService := club.NewClubService(db)
 	personService := services.NewPersonService(db)
 
 	fmt.Print("Application is starting...")

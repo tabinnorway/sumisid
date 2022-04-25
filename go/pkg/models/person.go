@@ -10,5 +10,5 @@ type Person struct {
 	BirthDate   time.Time `json:"birthDate"`
 	IsAdmin     bool      `json:"isAdmin"`
 	PhoneNumber string    `json:"phoneNumber"`
-	MainClubId  int       `json:"diveClubId"`
+	MainClubId  int       `json:"clubId"`
 }

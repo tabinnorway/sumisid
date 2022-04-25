@@ -35,9 +35,9 @@ type ClubRow struct {
 func (d *Database) GetAllClub(ctx context.Context) ([]services.Club, error) {
 	res := []ClubRow{}
 
-	err := d.Client.Select(&res, `select * from diveclubs`)
+	err := d.Client.Select(&res, `select * from clubs`)
 	if err != nil {
-		fmt.Println("Could not retrieve dive clubs ", err.Error())
+		fmt.Println("Could not retrieve clubs ", err.Error())
 		return []services.Club{}, err
 	}
 
@@ -50,7 +50,7 @@ func (d *Database) GetAllClub(ctx context.Context) ([]services.Club, error) {
 
 func (d *Database) GetClub(ctx context.Context, id int) (services.Club, error) {
 	var clubRow ClubRow
-	row := d.Client.QueryRowContext(ctx, `select * from diveclubs where id = $1 order by id`, id)
+	row := d.Client.QueryRowContext(ctx, `select * from clubs where id = $1 order by id`, id)
 	err := row.Scan(
 		&clubRow.Id,
 		&clubRow.Club_name,
@@ -62,13 +62,13 @@ func (d *Database) GetClub(ctx context.Context, id int) (services.Club, error) {
 		&clubRow.Extra_info,
 	)
 	if err != nil {
-		return services.Club{}, fmt.Errorf("error fetching dive club %w", err)
+		return services.Club{}, fmt.Errorf("error fetching club %w", err)
 	}
 	return convertRowToClub(clubRow), nil
 }
 
 func (d *Database) UpdateClub(ctx context.Context, id int, dc services.Club) (services.Club, error) {
-	fmt.Println("Going to update diveclub")
+	fmt.Println("Going to update club")
 	row := ClubRow{
 		Id:                id,
 		Club_name:         dc.Name,
@@ -81,7 +81,7 @@ func (d *Database) UpdateClub(ctx context.Context, id int, dc services.Club) (se
 	}
 	rows, err := d.Client.ExecContext(
 		ctx,
-		`update diveclubs
+		`update clubs
 			set club_name = $1,
 				street_address = $2,
 				street_number = $3,
@@ -100,23 +100,23 @@ func (d *Database) UpdateClub(ctx context.Context, id int, dc services.Club) (se
 		id,
 	)
 	if err != nil {
-		return services.Club{}, fmt.Errorf("error updating dive club %w", err)
+		return services.Club{}, fmt.Errorf("error updating club %w", err)
 	}
 	numRows, err := rows.RowsAffected()
 	if err != nil {
-		return services.Club{}, fmt.Errorf("error updating dive club %w", err)
+		return services.Club{}, fmt.Errorf("error updating club %w", err)
 	}
 	fmt.Println("Number of rows affected by update ", numRows)
 	if err != nil {
-		return services.Club{}, fmt.Errorf("error updating dive club %w", err)
+		return services.Club{}, fmt.Errorf("error updating club %w", err)
 	}
 	return d.GetClub(ctx, id)
 }
 
 func (d *Database) DeleteClub(ctx context.Context, id int) error {
-	_, err := d.Client.ExecContext(ctx, `delete from diveclubs where id = $1`, id)
+	_, err := d.Client.ExecContext(ctx, `delete from clubs where id = $1`, id)
 	if err != nil {
-		return fmt.Errorf("error deleting dive club %w", err)
+		return fmt.Errorf("error deleting club %w", err)
 	}
 	return nil
 }
@@ -124,7 +124,7 @@ func (d *Database) DeleteClub(ctx context.Context, id int) error {
 func (d *Database) CreateClub(ctx context.Context, dc services.Club) (services.Club, error) {
 	lastInsertedId := 0
 	err := d.Client.QueryRow(
-		`insert into diveclubs (club_name, street_address, street_number, zip, phone_number, contact_person_id, extra_info)
+		`insert into clubs (club_name, street_address, street_number, zip, phone_number, contact_person_id, extra_info)
 		 values ($1, $2, $3, $4, $5, $6, $7)
 		 returning id`,
 		dc.Name,
@@ -137,7 +137,7 @@ func (d *Database) CreateClub(ctx context.Context, dc services.Club) (services.C
 	).Scan(&lastInsertedId)
 
 	if err != nil {
-		return services.Club{}, fmt.Errorf("failed to insert diveclub: %w", err)
+		return services.Club{}, fmt.Errorf("failed to insert club: %w", err)
 	}
 
 	return d.GetClub(ctx, lastInsertedId)

@@ -18,10 +18,10 @@ func GetAllPeople(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPerson(w http.ResponseWriter, r *http.Request) {
-	// Get the dive club Id requested
+	// Get the club Id requested
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
-	// Find the dive club with that id
+	// Find the club with that id
 	for _, person := range mocks.People {
 		if person.Id == id {
 			OK(w, person)
@@ -32,7 +32,7 @@ func GetPerson(w http.ResponseWriter, r *http.Request) {
 }
 
 func AddPerson(w http.ResponseWriter, r *http.Request) {
-	// Read dive club from request body
+	// Read club from request body
 	defer r.Body.Close()
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -41,22 +41,22 @@ func AddPerson(w http.ResponseWriter, r *http.Request) {
 	var person models.Person
 	json.Unmarshal(body, &person)
 
-	// Append dive club to list
+	// Append club to list
 	person.Id = rand.Int()
 	mocks.People = append(mocks.People, person)
 	Created(w, person)
 }
 
 func DeletePerson(w http.ResponseWriter, r *http.Request) {
-	// Get the dive club Id requested
+	// Get the club Id requested
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
 
-	// Find the dive club with that id
+	// Find the club with that id
 	for index, person := range mocks.People {
 		if person.Id == id {
 			mocks.People = append(mocks.People[:index], mocks.People[index+1:]...)
-			// If we find the dive club, delete it
+			// If we find the club, delete it
 			w.WriteHeader(http.StatusNoContent)
 			return
 		}
