@@ -1,8 +1,33 @@
 [package]
-name = "sumisidserver"
+name = "sumisid"
 version = "0.1.0"
+authors = ["Terje Bergesen <terje@bergesen.info>"]
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+path = "src/main.rs"
+name = "sumisid"
 
 [dependencies]
+actix-web = "4"
+serde = { version = "1", features = ["derive"]}
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+config = "0.11"
+
+[dependencies.sqlx]
+version = "0.5.13"
+default-features = false
+features = [
+    "runtime-actix-rustls",
+    "macros",
+    "postgres",
+    "uuid",
+    "chrono",
+    "migrate"
+]
+
+[dev-dependencies]
+reqwest = "0.11"
