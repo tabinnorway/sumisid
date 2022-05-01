@@ -41,6 +41,13 @@ create table if not exists competitions (
     comments text
 );
 
+create table club_members (
+    id serial primary key,
+    club_id int not null,
+    person_id int not null,
+    extra_info varchar(255)
+);
+
 alter table clubs
     add constraint fk_contact_person
     foreign key (contact_person_id)
@@ -50,6 +57,16 @@ alter table people
     add constraint fk_main_club
     foreign key(main_club_id)
     references clubs(id);
+
+alter table club_members
+    add constraint fK_club_member_club
+    foreign key (club_id)
+    references clubs(id);
+
+alter table club_members
+    add constraint fk_club_member_person
+    foreign key (person_id)
+    references people (id);
 
 alter table competitions
     add constraint fk_competition_location

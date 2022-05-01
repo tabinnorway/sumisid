@@ -57,9 +57,13 @@ func (h *Handler) PutClub(w http.ResponseWriter, r *http.Request) {
 	}
 
 	dc, err := h.ClubService.UpdateClub(r.Context(), id, newDc)
+	if err != nil {
+		panic(err)
+	}
 	if err := json.NewEncoder(w).Encode(dc); err != nil {
 		panic(err)
 	}
+	println(dc.Name)
 }
 
 func (h *Handler) GetAllClub(w http.ResponseWriter, r *http.Request) {
@@ -126,5 +130,4 @@ func (h *Handler) DeleteClub(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	EntityWasDeleted(w, "Club")
-	return
 }

@@ -4,6 +4,12 @@ alter table clubs
 alter table people
     drop constraint fk_main_club;
 
+alter table club_members
+    drop constraint fK_club_member_club;
+
+alter table club_members
+    drop constraint fK_club_member_person;
+
 alter table competitions
     drop constraint fk_competition_location;
 
@@ -14,3 +20,4 @@ drop table if exists clubs;
 drop table if exists people;
 drop table if exists competitions;
 drop table if exists locations;
+drop table if exists club_members

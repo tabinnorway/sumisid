@@ -141,5 +141,4 @@ func (h *Handler) DeletePerson(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	EntityWasDeleted(w, "Person")
-	return
 }
