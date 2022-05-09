@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -41,6 +42,9 @@ func (h *Handler) mapRoutes() {
 		fmt.Fprintf(w, "pong\n")
 	})
 
+	h.Router.HandleFunc("/google_login", GoogleLogin).Methods("GET")
+	h.Router.HandleFunc("/google_callback", GoogleCallback).Methods("GET")
+
 	h.Router.Handle("/", http.FileServer(http.Dir("./views")))
 
 	h.Router.HandleFunc("/api/v1/people", h.GetAllPerson).Methods("GET")
@@ -54,6 +58,47 @@ func (h *Handler) mapRoutes() {
 	h.Router.HandleFunc("/api/v1/clubs", h.PostClub).Methods("POST")
 	h.Router.HandleFunc("/api/v1/clubs/{id}", h.PutClub).Methods("PUT")
 	h.Router.HandleFunc("/api/v1/clubs/{id}", h.DeleteClub).Methods("DELETE")
+}
+
+func GoogleLogin(w http.ResponseWriter, req *http.Request) {
+	googleConfig := SetupConfig()
+	url := googleConfig.AuthCodeURL("randomstate")
+	http.Redirect(w, req, url, http.StatusSeeOther)
+}
+
+func GoogleCallback(w http.ResponseWriter, req *http.Request) {
+	state := req.URL.Query()["state"][0]
+	if state != "randomstate" {
+		fmt.Println(w, "states don't match")
+		return
+	}
+	code := req.URL.Query()["code"][0]
+	googleConfig := SetupConfig()
+
+	token, err := googleConfig.Exchange(context.Background(), code)
+	if err != nil {
+		fmt.Fprintln(w, "Code-Token Exchange failed")
+	}
+
+	println("\n\n===> AccessToken")
+	println("AccessToken : ", token.AccessToken)
+	println("TokenType   : ", token.TokenType)
+	println("RefreshToken: ", token.RefreshToken)
+	println("Expiry      : ", token.Expiry.String())
+	println("Now         : ", time.Now().String())
+	println("===>\n\n")
+
+	resp, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
+	if err != nil {
+		fmt.Fprintln(w, "Failed to fetch user information from Google")
+	}
+
+	userData, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Fprintln(w, "Could not parse user data JSON")
+	}
+
+	fmt.Fprintln(w, string(userData))
 }
 
 func (h *Handler) Serve() error {

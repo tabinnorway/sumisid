@@ -25,7 +25,6 @@ func Run() error {
 	dcService := club.NewClubService(db)
 	personService := services.NewPersonService(db)
 
-	fmt.Print("Application is starting...")
 	now := time.Now()
 	log.Println("Server started at: ", now.Local().Format(time.UnixDate))
 
