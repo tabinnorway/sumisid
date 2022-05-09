@@ -1,11 +1,9 @@
 import ReactDOM from 'react-dom';
 
 const App = () => {
-    return (
-        <div>
-            <h1>Hi there</h1>
-        </div>
-    );
+    return <div>
+        <h1>Hello there</h1>
+    </div>
 };
 
 ReactDOM.render(
