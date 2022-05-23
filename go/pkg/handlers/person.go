@@ -80,7 +80,6 @@ func UpdatePerson(w http.ResponseWriter, r *http.Request) {
 
 	for index, person := range mocks.People {
 		if person.Id == id {
-			log.Println("Found person with id: ", id, " at index ", index)
 			// If we find the person, update it
 			person.FirstName = updatedPerson.FirstName
 			person.MiddleName = updatedPerson.MiddleName

@@ -65,3 +65,4 @@ alter table locations
     add constraint fk_location_contact_person
     foreign key(contact_person_id)
     references people(id);
+    

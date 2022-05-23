@@ -9,8 +9,9 @@ import (
 
 func JSONMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authHeader := r.Header["Authorization"][0]
 		if r != nil && r.Header != nil && r.Header["Authorization"] != nil {
-			println("=== AUTH: ", r.Header["Authorization"][0])
+			println("=== AUTH: ", authHeader)
 		}
 		if strings.HasPrefix(r.URL.Path, "/api/") {
 			w.Header().Set("Content-Type", "application/json; charset=UTF-8")

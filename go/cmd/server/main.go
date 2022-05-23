@@ -26,7 +26,7 @@ func Run() error {
 	personService := services.NewPersonService(db)
 
 	now := time.Now()
-	log.Println("Server started at: ", now.Local().Format(time.UnixDate))
+	log.Println(fmt.Sprintf("Server started at: %s", now.Local().Format(time.UnixDate)))
 
 	httpHandler := transportHttp.NewHandler(dcService, personService)
 	if err := httpHandler.Serve(); err != nil {

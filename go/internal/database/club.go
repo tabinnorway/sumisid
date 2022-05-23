@@ -68,7 +68,6 @@ func (d *Database) GetClub(ctx context.Context, id int) (services.Club, error) {
 }
 
 func (d *Database) UpdateClub(ctx context.Context, id int, dc services.Club) (services.Club, error) {
-	fmt.Println("Going to update club")
 	row := ClubRow{
 		Id:                id,
 		Club_name:         dc.Name,
@@ -106,9 +105,8 @@ func (d *Database) UpdateClub(ctx context.Context, id int, dc services.Club) (se
 	if err != nil {
 		return services.Club{}, fmt.Errorf("error updating club %w", err)
 	}
-	fmt.Println("Number of rows affected by update ", numRows)
-	if err != nil {
-		return services.Club{}, fmt.Errorf("error updating club %w", err)
+	if numRows != 1 {
+		return services.Club{}, fmt.Errorf("error updating club %d rows updated, expected 1", numRows)
 	}
 	return d.GetClub(ctx, id)
 }

@@ -51,6 +51,8 @@ func (h *Handler) PutPerson(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	println(fmt.Sprintf("Updating person with id: %d with name %s %s %s", id, oldPerson.FirstName, oldPerson.MiddleName, oldPerson.LastName))
+
 	var newPerson services.Person
 	if err := json.NewDecoder(r.Body).Decode(&newPerson); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

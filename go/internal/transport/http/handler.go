@@ -80,14 +80,6 @@ func GoogleCallback(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprintln(w, "Code-Token Exchange failed")
 	}
 
-	println("\n\n===> AccessToken")
-	println("AccessToken : ", token.AccessToken)
-	println("TokenType   : ", token.TokenType)
-	println("RefreshToken: ", token.RefreshToken)
-	println("Expiry      : ", token.Expiry.String())
-	println("Now         : ", time.Now().String())
-	println("===>\n\n")
-
 	resp, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
 	if err != nil {
 		fmt.Fprintln(w, "Failed to fetch user information from Google")
