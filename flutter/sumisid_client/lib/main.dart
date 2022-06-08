@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:sumisid_client/models/club.dart';
+import 'package:sumisid/models/club.dart';
 
 import 'models/person.dart';
 
@@ -15,11 +15,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Sumisid',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Sumisid'),
     );
   }
 }
@@ -43,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<List<Club>> fetchDiveClubs() async {
-    var jsonString = (await http.get(Uri.parse('http://localhost:8080/api/v1/diveclubs'))).body;
+    var jsonString = (await http.get(Uri.parse('http://127.0.0.1:8080/api/v1/clubs'))).body;
     var jsonList = jsonDecode(jsonString) as List;
     return jsonList.map((jsonList) => Club.fromJson(jsonList)).toList();
   }
@@ -70,7 +71,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: const TextStyle(fontFamily: 'Orbitron', fontWeight: FontWeight.w900, fontSize: 32),
+        ),
       ),
       body: Center(
         child: Column(
