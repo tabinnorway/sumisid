@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<List<Club>> fetchDiveClubs() async {
-    var jsonString = (await http.get(Uri.parse('http://127.0.0.1:8080/api/v1/clubs'))).body;
+    var jsonString = (await http.get(Uri.parse('http://localhost:8080/api/v1/clubs'))).body;
     var jsonList = jsonDecode(jsonString) as List;
     return jsonList.map((jsonList) => Club.fromJson(jsonList)).toList();
   }

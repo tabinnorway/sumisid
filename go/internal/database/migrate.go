@@ -18,12 +18,7 @@ func (d *Database) MigrateDB() error {
 		return fmt.Errorf("could not create postgres driver: %w", err)
 	}
 
-	fmt.Println("***\n*** Going to run up-migrations\n***")
-	m, err := migrate.NewWithDatabaseInstance(
-		"file:///migrations",
-		"postgres",
-		driver,
-	)
+	m, err := migrate.NewWithDatabaseInstance("file:///migrations", "postgres", driver)
 	if err != nil {
 		fmt.Println(err)
 		return err
@@ -33,6 +28,5 @@ func (d *Database) MigrateDB() error {
 			return fmt.Errorf("===> ERROR\n===> could not run up migrations: %w\n===>", err)
 		}
 	}
-	fmt.Println("***\n*** Succecssfully migrated the DB\n****")
 	return nil
 }

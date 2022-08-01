@@ -1,6 +1,7 @@
 git-credential-manager/
 github-token.txt
 install-from-source.sh
+sumisid_client/ios/build/
 
 *.exe
 a.out

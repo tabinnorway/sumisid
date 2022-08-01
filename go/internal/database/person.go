@@ -78,8 +78,6 @@ func (d *Database) GetPerson(ctx context.Context, id int) (services.Person, erro
 }
 
 func (d *Database) UpdatePerson(ctx context.Context, id int, p services.Person) (services.Person, error) {
-	fmt.Println("Going to update person with birth date: ", p.BirthDate)
-
 	rows, err := d.Client.ExecContext(
 		ctx,
 		`update people
@@ -109,9 +107,8 @@ func (d *Database) UpdatePerson(ctx context.Context, id int, p services.Person) 
 	if err != nil {
 		return services.Person{}, fmt.Errorf("error updating person %w", err)
 	}
-	fmt.Println("Number of rows affected by update ", numRows)
-	if err != nil {
-		return services.Person{}, fmt.Errorf("error updating person %w", err)
+	if numRows != 1 {
+		return services.Person{}, fmt.Errorf("error updating person got %d rows affected, expected 1", err)
 	}
 	return d.GetPerson(ctx, id)
 }
